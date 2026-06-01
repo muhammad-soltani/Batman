@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+vue-frontend/node_modules/
+vue-frontend/dist/
+.git/
+.env
