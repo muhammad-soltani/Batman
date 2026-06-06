@@ -16,7 +16,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
+# Install CPU-only PyTorch first to avoid downloading the ~2GB CUDA binaries
 RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install torch==2.12.0 --index-url https://download.pytorch.org/whl/cpu && \
     pip install -r requirements.txt
 
 COPY . .
