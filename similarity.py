@@ -1,4 +1,9 @@
+import re
 from rapidfuzz.fuzz import ratio
+
+def _normalize_whitespace(text: str) -> str:
+    """Collapse multiple spaces/newlines and strip leading/trailing whitespace."""
+    return re.sub(r'\s+', ' ', text).strip()
 
 class Similarity:
     def __init__(self):
@@ -6,4 +11,6 @@ class Similarity:
         pass
 
     def exact(self, text_a: str, text_b: str) -> float:
-        return ratio(text_a, text_b) / 100.0
+        a = _normalize_whitespace(text_a)
+        b = _normalize_whitespace(text_b)
+        return ratio(a, b) / 100.0

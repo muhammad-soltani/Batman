@@ -1,69 +1,92 @@
+<script setup>
+import { computed } from "vue";
+import { compareTexts } from "../api";
+import { useTextSubmit } from "../composables/useTextSubmit";
+import TextInputsGrid from "./TextInputsGrid.vue";
+
+const {
+  textA,
+  textB,
+  result,
+  loading,
+  error,
+  submit: compare,
+} = useTextSubmit(compareTexts, (data) => data.matches);
+
+const matches = computed(() => result.value ?? []);
+
+function scoreClass(score) {
+  if (score >= 0.9) return "high";
+  if (score >= 0.7) return "medium";
+  return "low";
+}
+
+function fillClass(score) {
+  if (score >= 0.9) return "fill-high";
+  if (score >= 0.7) return "fill-medium";
+  return "fill-low";
+}
+</script>
+
 <template>
   <div class="card">
-    <div class="card-title">
-      <span class="card-title-icon">⚖️</span>
-      مقایسه جملات دو متن
-    </div>
-
-    <div class="inputs-grid">
-      <div class="input-wrap">
-        <label class="input-label" for="textA">📄 متن اول</label>
-        <textarea
-          id="textA"
-          v-model="textA"
-          placeholder="متن اول را اینجا وارد کنید..."
-          rows="8"
-        />
-      </div>
-      <div class="input-wrap">
-        <label class="input-label" for="textB">📄 متن دوم</label>
-        <textarea
-          id="textB"
-          v-model="textB"
-          placeholder="متن دوم را اینجا وارد کنید..."
-          rows="8"
-        />
-      </div>
-    </div>
-
-    <div class="action-bar">
-      <button class="btn-primary" :disabled="loading" @click="compare">
-        <span v-if="loading" class="spinner"></span>
-        <span v-else>🚀</span>
-        {{ loading ? "در حال پردازش..." : "شروع مقایسه" }}
-      </button>
+    <div class="card-header">
+      <div class="card-title">مقایسه جملات دو متن</div>
       <span v-if="matches.length" class="badge"
         >{{ matches.length }} تطبیق یافت شد</span
       >
     </div>
 
-    <div v-if="error" class="alert-error">⚠️ {{ error }}</div>
+    <TextInputsGrid
+      v-model:modelA="textA"
+      v-model:modelB="textB"
+      id-a="textA"
+      id-b="textB"
+    />
+
+    <div class="action-bar">
+      <button class="btn-primary" :disabled="loading" @click="compare">
+        <span v-if="loading" class="spinner"></span>
+        {{ loading ? "در حال پردازش..." : "شروع مقایسه" }}
+      </button>
+    </div>
+
+    <div v-if="error" class="alert-error">{{ error }}</div>
 
     <template v-if="matches.length">
       <div class="results-header">
         <span class="results-title">نتایج مقایسه</span>
         <div class="legend">
-          <span class="legend-item"
-            ><span
+          <span class="legend-item">
+            <span
               class="legend-dot"
-              style="background: #dcfce7; border: 1.5px solid #10b981"
+              style="
+                background: rgba(34, 197, 94, 0.2);
+                border: 1.5px solid rgba(34, 197, 94, 0.5);
+              "
             ></span>
-            بالا (≥۹۰٪)</span
-          >
-          <span class="legend-item"
-            ><span
+            بالا (≥۹۰٪)
+          </span>
+          <span class="legend-item">
+            <span
               class="legend-dot"
-              style="background: #fef9c3; border: 1.5px solid #f59e0b"
+              style="
+                background: rgba(234, 179, 8, 0.2);
+                border: 1.5px solid rgba(234, 179, 8, 0.5);
+              "
             ></span>
-            متوسط (≥۷۰٪)</span
-          >
-          <span class="legend-item"
-            ><span
+            متوسط (≥۷۰٪)
+          </span>
+          <span class="legend-item">
+            <span
               class="legend-dot"
-              style="background: #ffe4e6; border: 1.5px solid #ef4444"
+              style="
+                background: rgba(239, 68, 68, 0.2);
+                border: 1.5px solid rgba(239, 68, 68, 0.5);
+              "
             ></span>
-            پایین</span
-          >
+            پایین
+          </span>
         </div>
       </div>
       <div class="results-table-wrap">
@@ -84,30 +107,52 @@
               :class="scoreClass(m.similarity)"
             >
               <td>
-                <span style="color: var(--text-muted); font-size: 0.82rem">{{
-                  i + 1
-                }}</span>
+                <span
+                  style="
+                    color: var(--text-dim);
+                    font-size: 0.78rem;
+                    font-weight: 700;
+                  "
+                  >{{ i + 1 }}</span
+                >
               </td>
               <td>{{ m.text_a }}</td>
               <td>{{ m.text_b }}</td>
               <td>
-                <span
-                  :class="['score-pill', 'score-' + scoreClass(m.similarity)]"
-                >
-                  {{ (m.similarity * 100).toFixed(1) }}%
-                </span>
+                <div class="score-bar-wrap">
+                  <span
+                    :class="['score-pill', 'score-' + scoreClass(m.similarity)]"
+                  >
+                    {{ (m.similarity * 100).toFixed(1) }}%
+                  </span>
+                  <div class="score-bar">
+                    <div
+                      class="score-bar-fill"
+                      :class="fillClass(m.similarity)"
+                      :style="{ width: m.similarity * 100 + '%' }"
+                    ></div>
+                  </div>
+                </div>
               </td>
               <td>
-                <span
-                  v-if="m.exact_similarity != null"
-                  :class="[
-                    'score-pill',
-                    'score-' + scoreClass(m.exact_similarity),
-                  ]"
-                >
-                  {{ (m.exact_similarity * 100).toFixed(1) }}%
-                </span>
-                <span v-else style="color: var(--text-muted)">—</span>
+                <div v-if="m.exact_similarity != null" class="score-bar-wrap">
+                  <span
+                    :class="[
+                      'score-pill',
+                      'score-' + scoreClass(m.exact_similarity),
+                    ]"
+                  >
+                    {{ (m.exact_similarity * 100).toFixed(1) }}%
+                  </span>
+                  <div class="score-bar">
+                    <div
+                      class="score-bar-fill"
+                      :class="fillClass(m.exact_similarity)"
+                      :style="{ width: m.exact_similarity * 100 + '%' }"
+                    ></div>
+                  </div>
+                </div>
+                <span v-else style="color: var(--text-dim)">—</span>
               </td>
             </tr>
           </tbody>
@@ -116,39 +161,8 @@
     </template>
 
     <div v-else-if="!loading && !error" class="empty-state">
-      <div class="empty-icon">📝</div>
-      <div>دو متن را وارد کرده و دکمه مقایسه را بزنید</div>
+      <span class="empty-state-icon"></span>
+      دو متن را وارد کرده و دکمه مقایسه را بزنید
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import { compareTexts } from "../api";
-
-const textA = ref("");
-const textB = ref("");
-const matches = ref([]);
-const loading = ref(false);
-const error = ref("");
-
-async function compare() {
-  error.value = "";
-  matches.value = [];
-  loading.value = true;
-  try {
-    const res = await compareTexts(textA.value, textB.value);
-    matches.value = res.data.matches;
-  } catch (e) {
-    error.value = e.response?.data?.detail || "خطا در ارتباط با سرور";
-  } finally {
-    loading.value = false;
-  }
-}
-
-function scoreClass(score) {
-  if (score >= 0.9) return "high";
-  if (score >= 0.7) return "medium";
-  return "low";
-}
-</script>

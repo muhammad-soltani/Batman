@@ -65,7 +65,9 @@ def plagiarism_report(request: CompareRequest):
 def diff_and_highlight(request: CompareRequest):
     norm_a = normalizer.normalize(request.text_a)
     norm_b = normalizer.normalize(request.text_b)
+    sem_diff = semantic.diff(norm_a, norm_b)
+    sem_score = sem_diff["semantic_similarity"]
     return {
-        "semantic_diff": semantic.diff(norm_a, norm_b),
-        "highlight": highlight_diff(norm_a, norm_b),
+        "semantic_diff": sem_diff,
+        "highlight": highlight_diff(norm_a, norm_b, semantic_similarity=sem_score),
     }

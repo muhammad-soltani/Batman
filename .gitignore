@@ -1,0 +1,64 @@
+﻿# --- Python ---------------------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Test & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# --- Environment & Secrets ------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- ML / Hugging Face model cache ----------------------------
+# مدل‌ها معمولاً در ~/.cache ذخیره می‌شوند
+# در صورت دانلود محلی، پوشه‌های زیر نادیده گرفته می‌شوند
+models/
+*.bin
+*.safetensors
+
+# --- Frontend: Vue / Vite / Node ------------------------------
+vue-frontend/node_modules/
+vue-frontend/dist/
+vue-frontend/.vite/
+vue-frontend/*.local
+
+# --- Docker ---------------------------------------------------
+# فایل‌های اصلی Docker کامیت می‌شوند؛ فقط override نادیده گرفته می‌شود
+docker-compose.override.yml
+
+# --- IDE / Editor ---------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS -------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Temp / Helper scripts ------------------------------------
+write_readme.py
+node_modules/
+.nuxt/
+.output/
+dist/
