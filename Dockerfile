@@ -2,8 +2,8 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-ENV PIP_NO_IPV6=1
-ENV HF_HOME=/cache/huggingface \
+ENV PIP_NO_IPV6=1 \
+    HF_HOME=/cache/huggingface \
     SENTENCE_TRANSFORMERS_HOME=/cache/sentence_transformers
 
 RUN apt-get update \
