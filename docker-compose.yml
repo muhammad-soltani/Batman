@@ -4,6 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
       network: host
+      args:
+        HTTP_PROXY: http://127.0.0.1:9815
+        HTTPS_PROXY: http://127.0.0.1:9815
     container_name: batman-backend
     ports:
       - "8000:8000"

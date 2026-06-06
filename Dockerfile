@@ -1,7 +1,12 @@
 FROM python:3.13-slim
 
 WORKDIR /app
-ENV CI=true 
+
+# Build-time proxy — available to all RUN steps, not stored in the final image
+ARG HTTP_PROXY=http://127.0.0.1:9815
+ARG HTTPS_PROXY=http://127.0.0.1:9815
+
+ENV CI=true
 ENV PIP_NO_IPV6=1 \
     HF_HOME=/cache/huggingface \
     SENTENCE_TRANSFORMERS_HOME=/cache/sentence_transformers
