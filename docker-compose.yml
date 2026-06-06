@@ -7,9 +7,22 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
+    environment:
+      # Must match the ENV values baked into the Dockerfile so the
+      # model cache is always written to the mounted volume.
+      - HF_HOME=/cache/huggingface
+      - SENTENCE_TRANSFORMERS_HOME=/cache/sentence_transformers
+    volumes:
+      # Named volume — persists across `docker compose up --build`.
+      # The model (~1.1 GB) is downloaded once on first startup and
+      # reused on every subsequent start, even after a full image rebuild.
+      - hf_cache:/cache
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
-      interval: 30s
+      # Grace period: gives the model time to download on very first run.
+      # Once cached in the volume, startup takes only a few seconds.
+      start_period: 180s
+      interval: 20s
       timeout: 10s
       retries: 3
 
@@ -21,5 +34,11 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy # wait until backend passes its healthcheck
     restart: unless-stopped
+
+# Declare the named volume so Docker manages it outside the container lifecycle.
+# Survives: container removal, image rebuilds, `docker compose down` (without -v).
+volumes:
+  hf_cache:
