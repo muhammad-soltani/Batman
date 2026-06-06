@@ -21,7 +21,7 @@ const currentView = computed(() => views[tab.value]);
       <div class="header-inner">
         <div class="logo">
           <div class="logo-title">Batman</div>
-          <div class="logo-sub">بستر تشخیص شباهت نصوص</div>
+          <div class="logo-sub">بستر تشخیص مشابهت نصوص</div>
         </div>
         <nav class="tab-nav">
           <button
@@ -44,6 +44,6 @@ const currentView = computed(() => views[tab.value]);
       </Transition>
     </main>
 
-    <footer class="app-footer">Batman &mdash; بستر تشخیص شباهت نصوص</footer>
+    <footer class="app-footer">Batman &mdash; بستر تشخیص مشابهت نصوص</footer>
   </div>
 </template>
