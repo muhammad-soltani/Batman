@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     container_name: batman-frontend
     ports:
-      - "80:80"
+      - "3002:3002"
     depends_on:
       backend:
         condition: service_healthy

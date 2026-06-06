@@ -9,7 +9,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Install deps — own layer so it's only re-run when lockfile changes
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts=false
+RUN pnpm config set onlyBuiltDependencies esbuild
+RUN pnpm install --frozen-lockfile
 
 # Build
 COPY . .
