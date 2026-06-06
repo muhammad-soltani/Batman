@@ -24,7 +24,7 @@ app = FastAPI(title="Persian Text Similarity API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3002"],
+    allow_origins=["http://0.0.0.0:3002"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

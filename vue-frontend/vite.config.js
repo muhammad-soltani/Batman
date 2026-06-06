@@ -6,9 +6,9 @@ export default defineConfig({
   server: {
     port: 3002,
     proxy: {
-      "/compare": "http://localhost:8000",
-      "/report": "http://localhost:8000",
-      "/diff-highlight": "http://localhost:8000",
+      "/compare": "http://0.0.0.0:8000",
+      "/report": "http://0.0.0.0:8000",
+      "/diff-highlight": "http://0.0.0.0:8000",
     },
   },
 });
