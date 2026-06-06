@@ -1,7 +1,7 @@
-FROM python:3.10-slim
+FROM python:3.13-slim
 
 WORKDIR /app
-
+ENV CI=true 
 ENV PIP_NO_IPV6=1 \
     HF_HOME=/cache/huggingface \
     SENTENCE_TRANSFORMERS_HOME=/cache/sentence_transformers
