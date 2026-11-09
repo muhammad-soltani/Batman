@@ -2,6 +2,7 @@
 import { getDiffHighlight } from "../api";
 import { useTextSubmit } from "../composables/useTextSubmit";
 import TextInputsGrid from "./TextInputsGrid.vue";
+import { percent } from "../utils/format";
 
 const {
   textA,
@@ -40,7 +41,7 @@ const {
       <div class="diff-meta">
         <span>شباهت معنایی کلی:</span>
         <span class="diff-meta-score">
-          {{ (result.semantic_diff.semantic_similarity * 100).toFixed(1) }}%
+          {{ percent(result.semantic_diff.semantic_similarity) }}%
         </span>
       </div>
 

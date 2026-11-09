@@ -16,17 +16,20 @@ const currentView = computed(() => views[tab.value]);
 </script>
 
 <template>
-  <div id="app">
+  <div class="app-shell">
     <header class="app-header">
       <div class="header-inner">
         <div class="logo">
           <div class="logo-title">Batman</div>
           <div class="logo-sub">بستر تشخیص مشابهت نصوص</div>
         </div>
-        <nav class="tab-nav">
+        <nav class="tab-nav" role="tablist">
           <button
             v-for="t in tabs"
             :key="t.id"
+            type="button"
+            role="tab"
+            :aria-selected="tab === t.id"
             :class="['tab-btn', { active: tab === t.id }]"
             @click="tab = t.id"
           >
@@ -36,7 +39,7 @@ const currentView = computed(() => views[tab.value]);
       </div>
     </header>
 
-    <main class="app-main">
+    <main class="app-main" role="tabpanel">
       <Transition name="fade" mode="out-in">
         <keep-alive>
           <component :is="currentView" />

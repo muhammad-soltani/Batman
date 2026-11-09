@@ -1,0 +1,67 @@
+از پردازش متن فارسی تا تشخیص هوشمند شباهت معنایی؛ تجربه طراحی و پیاده‌سازی سامانه Batman یا از ایده تا عمل : بستر هوشمند تشخیص مشابهت یابی و سرقت ادبی
+1- طرح مسئله و انگیزه پروژه
+سرقت ادبی چیست؟
+چرا مقایسه کلمه‌به‌کلمه کافی نیست؟
+ اهداف و کاربردهای سامانه Batman
+2- مفهوم شباهت معنایی
+آشنایی مقدماتی با پردازش زبان طبیعی (NLP)
+NLP چیست؟
+کاربردهای NLP
+چالش‌های پردازش متن فارسی
+3- پیش‌پردازش متون فارسی
+Normalization
+Tokenization
+نیم‌فاصله و تفاوت حروف فارسی و عربی
+معرفی کتابخانه Hazm
+4-- روش‌های تشخیص شباهت متن
+String Similarity
+Edit Distance / Levenshtein / NGram va ...
+RapidFuzz
+Semantic Similarity
+5- مفهوم Embedding و نمایش عددی متن
+Embedding چیست؟
+چرا متن را به Vector تبدیل می‌کنیم؟
+مفهوم Sentence Embedding
+6-  آشنایی با مدل‌های زبانی و LLM
+مدل‌های زبانی چیستند؟
+Transformer به زبان ساده
+LLM چیست و چه کاربردی دارد؟
+تفاوت LLM با مدل‌های Embedding
+BERT چیست؟
+Sentence-BERT چیست؟
+مدل چندزبانه مورد استفاده در پروژه
+7- محاسبه شباهت معنایی با Cosine Similarity
+Vector Similarity
+Cosine Similarity
+Threshold و مفهوم تطابق
+8- معماری و Pipeline سامانه Batman
+Frontend با Vue.js
+Backend با FastAPI
+پردازش NLP
+مدل Semantic Similarity
+API و ارتباط اجزا
+Docker و Nginx
+9- ترکیب Semantic Similarity و String Similarity
+چرا یک معیار کافی نیست؟
+تشخیص Copy-Paste
+تشخیص بازنویسی
+تولید Word-Level Diff
+10- نمایش نتایج و گزارش تشخیص سرقت ادبی
+Coverage
+Semantic Similarity
+Exact Similarity
+تفسیر نتایج
+11-- Demo عملی سامانه Batman
+نمایش سایت های مشابه مثل سمیم نور و .. 
+متن یکسان
+متن بازنویسی‌شده
+متن کاملاً متفاوت
+تحلیل خروجی سیستم
+12- چالش‌ها، محدودیت‌ها و مسیر توسعه آینده
+بهبود مدل
+دیتابیس و ذخیره تاریخچه
+پردازش متون طولانی
+آپلود فایل
+بهینه‌سازی با GPU/Cache
+Authentication و Rate Limiting
+13- پرسش و پاسخ

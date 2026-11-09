@@ -1,8 +1,7 @@
-venv/
-__pycache__/
-*.pyc
-*.pyo
-vue-frontend/node_modules/
-vue-frontend/dist/
-.git/
-.env
+# Allow-list: the backend image only needs its Python modules + requirements.
+*
+!requirements.txt
+!*.py
+# Local helper scripts that are not part of the service
+build_thesis.py
+write_readme.py

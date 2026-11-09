@@ -65,14 +65,14 @@
 }
 
 body {
-  font-family: "Vazir";
+  font-family: "Vazir", Tahoma, "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
   direction: rtl;
   min-height: 100vh;
 }
 
-#app {
+.app-shell {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -145,6 +145,11 @@ body {
 }
 
 .tab-btn:hover { color: var(--text); }
+
+.tab-btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -2px;
+}
 
 .tab-btn.active {
   color: var(--gold);
@@ -237,6 +242,11 @@ body {
   font-weight: 500;
 }
 
+.input-counter-over {
+  color: var(--low-text);
+  font-weight: 700;
+}
+
 textarea {
   width: 100%;
   padding: 14px 16px;
@@ -261,6 +271,11 @@ textarea:focus {
 }
 
 textarea::placeholder { color: var(--text-dim); }
+
+textarea.textarea-over,
+textarea.textarea-over:focus {
+  border-color: rgba(239, 68, 68, 0.6);
+}
 
 /* ─── ACTION BAR ─────────────────────────────────────────── */
 .action-bar {
@@ -288,6 +303,11 @@ textarea::placeholder { color: var(--text-dim); }
 
 .btn-primary:hover:not(:disabled) { opacity: 0.85; }
 .btn-primary:active:not(:disabled) { opacity: 0.95; }
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
 
 .btn-primary:disabled {
   opacity: 0.4;
@@ -683,15 +703,27 @@ tr.low    td { background: rgba(239, 68, 68, 0.05); }
 
   .stats-grid { grid-template-columns: 1fr 1fr; }
 
-  .header-inner { padding: 14px 16px 0; }
+  .header-inner {
+    height: auto;
+    padding: 10px 16px 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
 
-  .header-badge { display: none; }
+  .tab-nav {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .tab-btn { height: 44px; white-space: nowrap; }
+
+  .card-header { flex-wrap: wrap; gap: 8px; }
+
+  .results-header { flex-wrap: wrap; gap: 8px; }
 
   .app-main { padding: 0 14px; margin: 16px auto; }
 
   .card { padding: 18px 14px; }
 
   .tab-btn { padding: 8px 14px 11px; font-size: 0.82rem; }
-
-  .tab-icon { display: none; }
 }

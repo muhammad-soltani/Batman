@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { compareTexts } from "../api";
 import { useTextSubmit } from "../composables/useTextSubmit";
 import TextInputsGrid from "./TextInputsGrid.vue";
+import { barWidth, percent } from "../utils/format";
 
 const {
   textA,
@@ -96,14 +97,14 @@ function fillClass(score) {
               <th>#</th>
               <th>جمله از متن اول</th>
               <th>جمله از متن دوم</th>
-              <th>معنایی</th>
-              <th>دقیق</th>
+              <th title="شباهت معنا (حتی با کلمات متفاوت)">معنایی</th>
+              <th title="شباهت کلمه‌به‌کلمه؛ فاصله، نیم‌فاصله و علائم نگارشی نادیده گرفته می‌شوند">لفظی</th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-for="(m, i) in matches"
-              :key="i"
+              :key="m.a_index"
               :class="scoreClass(m.similarity)"
             >
               <td>
@@ -123,13 +124,13 @@ function fillClass(score) {
                   <span
                     :class="['score-pill', 'score-' + scoreClass(m.similarity)]"
                   >
-                    {{ (m.similarity * 100).toFixed(1) }}%
+                    {{ percent(m.similarity) }}%
                   </span>
                   <div class="score-bar">
                     <div
                       class="score-bar-fill"
                       :class="fillClass(m.similarity)"
-                      :style="{ width: m.similarity * 100 + '%' }"
+                      :style="{ width: barWidth(m.similarity) }"
                     ></div>
                   </div>
                 </div>
@@ -142,13 +143,13 @@ function fillClass(score) {
                       'score-' + scoreClass(m.exact_similarity),
                     ]"
                   >
-                    {{ (m.exact_similarity * 100).toFixed(1) }}%
+                    {{ percent(m.exact_similarity) }}%
                   </span>
                   <div class="score-bar">
                     <div
                       class="score-bar-fill"
                       :class="fillClass(m.exact_similarity)"
-                      :style="{ width: m.exact_similarity * 100 + '%' }"
+                      :style="{ width: barWidth(m.exact_similarity) }"
                     ></div>
                   </div>
                 </div>
@@ -160,8 +161,11 @@ function fillClass(score) {
       </div>
     </template>
 
+    <div v-else-if="result && !loading" class="empty-state">
+      هیچ جمله‌ی مشابهی میان دو متن یافت نشد
+    </div>
+
     <div v-else-if="!loading && !error" class="empty-state">
-      <span class="empty-state-icon"></span>
       دو متن را وارد کرده و دکمه مقایسه را بزنید
     </div>
   </div>

@@ -2,6 +2,7 @@
 import { getReport } from "../api";
 import { useTextSubmit } from "../composables/useTextSubmit";
 import TextInputsGrid from "./TextInputsGrid.vue";
+import { barWidth, percent } from "../utils/format";
 
 const {
   textA,
@@ -64,14 +65,14 @@ function verdictText(val) {
             class="stat-value"
             :style="{ color: statColor(report.coverage_a) }"
           >
-            {{ (report.coverage_a * 100).toFixed(1) }}%
+            {{ percent(report.coverage_a) }}%
           </div>
           <div class="stat-label">پوشش متن اول</div>
           <div class="stat-bar">
             <div
               class="stat-bar-fill"
               :style="{
-                width: report.coverage_a * 100 + '%',
+                width: barWidth(report.coverage_a),
                 background: statColor(report.coverage_a),
               }"
             ></div>
@@ -82,14 +83,14 @@ function verdictText(val) {
             class="stat-value"
             :style="{ color: statColor(report.coverage_b) }"
           >
-            {{ (report.coverage_b * 100).toFixed(1) }}%
+            {{ percent(report.coverage_b) }}%
           </div>
           <div class="stat-label">پوشش متن دوم</div>
           <div class="stat-bar">
             <div
               class="stat-bar-fill"
               :style="{
-                width: report.coverage_b * 100 + '%',
+                width: barWidth(report.coverage_b),
                 background: statColor(report.coverage_b),
               }"
             ></div>
@@ -100,14 +101,14 @@ function verdictText(val) {
             class="stat-value"
             :style="{ color: statColor(report.avg_semantic_similarity) }"
           >
-            {{ (report.avg_semantic_similarity * 100).toFixed(1) }}%
+            {{ percent(report.avg_semantic_similarity) }}%
           </div>
           <div class="stat-label">میانگین شباهت معنایی</div>
           <div class="stat-bar">
             <div
               class="stat-bar-fill"
               :style="{
-                width: report.avg_semantic_similarity * 100 + '%',
+                width: barWidth(report.avg_semantic_similarity),
                 background: statColor(report.avg_semantic_similarity),
               }"
             ></div>
@@ -118,14 +119,14 @@ function verdictText(val) {
             class="stat-value"
             :style="{ color: statColor(report.avg_exact_similarity) }"
           >
-            {{ (report.avg_exact_similarity * 100).toFixed(1) }}%
+            {{ percent(report.avg_exact_similarity) }}%
           </div>
-          <div class="stat-label">میانگین شباهت دقیق</div>
+          <div class="stat-label">میانگین شباهت لفظی</div>
           <div class="stat-bar">
             <div
               class="stat-bar-fill"
               :style="{
-                width: report.avg_exact_similarity * 100 + '%',
+                width: barWidth(report.avg_exact_similarity),
                 background: statColor(report.avg_exact_similarity),
               }"
             ></div>
@@ -136,7 +137,7 @@ function verdictText(val) {
       <div class="plagiarism-verdict" :class="verdictClass(report.coverage_a)">
         <div class="verdict-title">{{ verdictText(report.coverage_a) }}</div>
         <div class="verdict-sub">
-          بر اساس پوشش {{ (report.coverage_a * 100).toFixed(1) }}٪ از متن اول
+          بر اساس پوشش {{ percent(report.coverage_a) }}٪ از متن اول
         </div>
       </div>
     </template>

@@ -3,34 +3,44 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # Host networking during the build lets RUN steps reach a proxy that
+      # listens on the host's loopback (e.g. HTTP_PROXY=http://127.0.0.1:9815).
       network: host
       args:
-        HTTP_PROXY: http://127.0.0.1:9815
-        HTTPS_PROXY: http://127.0.0.1:9815
+        # Optional build proxy — set in your shell or in .env (see .env.example).
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-}
     container_name: batman-backend
+    # Published on loopback only: the UI reaches the API through nginx, and
+    # http://localhost:8000/docs stays available on this machine.
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     restart: unless-stopped
     environment:
-      - HF_HOME=/cache/huggingface
-      - SENTENCE_TRANSFORMERS_HOME=/cache/sentence_transformers
-    volumes:
-      - hf_cache:/cache
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
-      start_period: 180s
-      interval: 20s
-      timeout: 10s
-      retries: 3
+      MAX_TEXT_LENGTH: ${MAX_TEXT_LENGTH:-50000}
+      MAX_CONCURRENT_INFERENCE: ${MAX_CONCURRENT_INFERENCE:-2}
+      SIMILARITY_THRESHOLD: ${SIMILARITY_THRESHOLD:-0.7}
+      LEXICAL_MATCH_THRESHOLD: ${LEXICAL_MATCH_THRESHOLD:-0.8}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3002,http://127.0.0.1:3002}
+    security_opt:
+      - no-new-privileges:true
+    # Healthcheck (GET /health) is defined in the Dockerfile.
 
   frontend:
     build:
       context: ./vue-frontend
       dockerfile: Dockerfile
+      args:
+        VITE_MAX_TEXT_LENGTH: ${MAX_TEXT_LENGTH:-50000}
+        # Empty on the server (nginx routes /api). For local use without a
+        # reverse proxy set API_BASE_URL=http://localhost:8000 in .env.
+        VITE_API_BASE_URL: ${API_BASE_URL:-}
     container_name: batman-frontend
     ports:
       - "3002:3002"
     restart: unless-stopped
-
-volumes:
-  hf_cache:
+    depends_on:
+      - backend
+    security_opt:
+      - no-new-privileges:true
