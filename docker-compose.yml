@@ -3,9 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # Host networking during the build lets RUN steps reach a proxy that
-      # listens on the host's loopback (e.g. HTTP_PROXY=http://127.0.0.1:9815).
-      network: host
+      # No "network: host" here: recent Compose (bake) refuses it unless the
+      # build is run with --allow=network.host. If your build proxy listens on
+      # the host's 127.0.0.1, see "proxy" in the README (override file).
       args:
         # Optional build proxy — set in your shell or in .env (see .env.example).
         HTTP_PROXY: ${HTTP_PROXY:-}

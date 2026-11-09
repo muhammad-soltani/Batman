@@ -444,6 +444,24 @@ docker compose up --build
 
 مدل (~۱.۱ گیگابایت) **هنگام build** در ایمیج Backend قرار می‌گیرد؛ بنابراین کانتینر در زمان اجرا به اینترنت نیاز ندارد. اگر برای دسترسی به اینترنت هنگام build به proxy نیاز دارید، `HTTP_PROXY` و `HTTPS_PROXY` را در `.env` تنظیم کنید (این مقادیر در ایمیج ذخیره نمی‌شوند).
 
+**proxy روی خود سیستم (`127.0.0.1`):** کانتینر build به‌طور پیش‌فرض به `127.0.0.1` سیستم میزبان دسترسی ندارد. نسخه‌های جدید Docker Compose هم `network: host` را بدون اجازه‌ی صریح نمی‌پذیرند (خطای `additional privileges requested: pass "--allow=network.host"`). اگر proxy شما روی `127.0.0.1` است، یک فایل `docker-compose.override.yml` (در `.gitignore` قرار دارد) بسازید:
+
+```yaml
+services:
+  backend:
+    build:
+      network: host
+```
+
+و build را با اجازه‌ی لازم اجرا کنید:
+
+```bash
+docker compose build --allow=network.host
+docker compose up -d
+```
+
+روی سرورهایی که به proxy نیاز ندارند هیچ‌کدام از این‌ها لازم نیست.
+
 برای اجرا در پس‌زمینه:
 
 ```bash
