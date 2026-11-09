@@ -3,14 +3,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # No "network: host" here: recent Compose (bake) refuses it unless the
-      # build is run with --allow=network.host. If your build proxy listens on
-      # the host's 127.0.0.1, see "proxy" in the README (override file).
+      # No "network: host" here: recent Compose (bake) refuses it without an
+      # explicit --allow=network.host, which `docker compose build` cannot pass.
+      # DNS errors during the build, or a proxy on the host's 127.0.0.1?
+      # See "خطای DNS یا proxy هنگام build" in the README.
       args:
         # Optional build proxy — set in your shell or in .env (see .env.example).
         HTTP_PROXY: ${HTTP_PROXY:-}
         HTTPS_PROXY: ${HTTPS_PROXY:-}
         NO_PROXY: ${NO_PROXY:-}
+    image: batman-backend:latest
     container_name: batman-backend
     # Published on loopback only: the UI reaches the API through nginx, and
     # http://localhost:8000/docs stays available on this machine.
@@ -36,6 +38,7 @@ services:
         # Empty on the server (nginx routes /api). For local use without a
         # reverse proxy set API_BASE_URL=http://localhost:8000 in .env.
         VITE_API_BASE_URL: ${API_BASE_URL:-}
+    image: batman-frontend:latest
     container_name: batman-frontend
     ports:
       - "3002:3002"

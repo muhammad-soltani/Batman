@@ -444,23 +444,34 @@ docker compose up --build
 
 مدل (~۱.۱ گیگابایت) **هنگام build** در ایمیج Backend قرار می‌گیرد؛ بنابراین کانتینر در زمان اجرا به اینترنت نیاز ندارد. اگر برای دسترسی به اینترنت هنگام build به proxy نیاز دارید، `HTTP_PROXY` و `HTTPS_PROXY` را در `.env` تنظیم کنید (این مقادیر در ایمیج ذخیره نمی‌شوند).
 
-**proxy روی خود سیستم (`127.0.0.1`):** کانتینر build به‌طور پیش‌فرض به `127.0.0.1` سیستم میزبان دسترسی ندارد. نسخه‌های جدید Docker Compose هم `network: host` را بدون اجازه‌ی صریح نمی‌پذیرند (خطای `additional privileges requested: pass "--allow=network.host"`). اگر proxy شما روی `127.0.0.1` است، یک فایل `docker-compose.override.yml` (در `.gitignore` قرار دارد) بسازید:
+#### خطای DNS یا proxy هنگام build (`Temporary failure in name resolution`)
 
-```yaml
+کانتینر build به‌طور پیش‌فرض از DNS خود Docker استفاده می‌کند (مقدار `dns` در `/etc/docker/daemon.json`، یا `8.8.8.8` اگر DNS سرور `127.0.0.53` باشد) و به `127.0.0.1` سرور هم دسترسی ندارد. اگر روی سرور خطای `Failed to resolve 'files.pythonhosted.org'` می‌بینید، یا proxy شما روی `127.0.0.1` است، یکی از این دو راه را انتخاب کنید:
+
+**راه ۱ — اصلاح دائمی DNS داکر (توصیه‌شده):** DNS سروری را که روی خود سرور درست کار می‌کند پیدا کنید:
+
+```bash
+resolvectl status | grep "DNS Servers"      # یا: cat /etc/resolv.conf
+getent hosts files.pythonhosted.org          # روی سرور باید IP برگرداند
+docker run --rm python:3.13-slim getent hosts files.pythonhosted.org   # داخل داکر
+```
+
+همان IPها را در `/etc/docker/daemon.json` بگذارید (مثلاً `{"dns": ["<DNS-1>", "<DNS-2>"]}`)، سپس `sudo systemctl restart docker` و `docker compose up -d --build`.
+
+**راه ۲ — build با شبکه‌ی سرور (مثل قبل):** نسخه‌های جدید Compose برای build از bake استفاده می‌کنند و `network: host` را بدون اجازه‌ی صریح نمی‌پذیرند (خطای `additional privileges requested: pass "--allow=network.host"`)، و `docker compose build` هم گزینه‌ی `--allow` ندارد. به‌جای آن مستقیماً از `buildx bake` استفاده کنید:
+
+```bash
+cat > docker-compose.override.yml <<'EOF'
 services:
   backend:
     build:
       network: host
+EOF
+docker buildx bake --allow=network.host --load -f docker-compose.yml -f docker-compose.override.yml
+docker compose up -d --no-build
 ```
 
-و build را با اجازه‌ی لازم اجرا کنید:
-
-```bash
-docker compose build --allow=network.host
-docker compose up -d
-```
-
-روی سرورهایی که به proxy نیاز ندارند هیچ‌کدام از این‌ها لازم نیست.
+`docker-compose.override.yml` در `.gitignore` است و فقط روی همان سرور می‌ماند. پس از ساختن آن، برای build همیشه از دستور `buildx bake` بالا استفاده کنید، چون `docker compose up --build` این فایل را می‌خواند و دوباره به همان خطای دسترسی می‌خورد. روی سرورهایی که DNS داکرشان درست کار می‌کند به هیچ‌کدام از این‌ها نیازی نیست.
 
 برای اجرا در پس‌زمینه:
 
